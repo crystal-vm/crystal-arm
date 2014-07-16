@@ -1,14 +1,14 @@
 GIT
-  remote: https://github.com/sapphire-vm/sapphire-reader.git
+  remote: https://github.com/kide-vm/kide-reader.git
   revision: 040b8423333a16d7d45e30cfd8f4987745e6cf55
   specs:
-    sapphire-reader (0.1.0)
+    kide-reader (0.1.0)
 
 GIT
-  remote: https://github.com/sapphire-vm/sapphire.git
+  remote: https://github.com/kide-vm/kide.git
   revision: 2044a3e994829cd7a8b8aea49734d23152ea221b
   specs:
-    sapphire (0.0.1)
+    kide (0.0.1)
       parslet (~> 1.6.1)
 
 GEM
@@ -86,8 +86,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  sapphire (= 0.0.1)!
-  sapphire-reader (= 0.1.0)!
+  kide (= 0.0.1)!
+  kide-reader (= 0.1.0)!
   jeweler
   minitest
   pry
