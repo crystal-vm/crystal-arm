@@ -1,7 +1,7 @@
 source "http://rubygems.org"
 
-gem "crystal" , "0.0.1" , :git => "https://github.com/crystal-vm/crystal.git" 
-gem "crystal-reader" , "0.1.0" , :require => "parser" , :git => "https://github.com/crystal-vm/crystal-reader.git" 
+gem "sapphire" , "0.0.1" , :git => "https://github.com/sapphire-vm/sapphire.git" 
+gem "sapphire-reader" , "0.1.0" , :require => "parser" , :git => "https://github.com/sapphire-vm/sapphire-reader.git" 
 
 group :development do
   gem "minitest"

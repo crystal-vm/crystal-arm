@@ -1,11 +1,11 @@
-## Crystal in Arm
+## Sapphire in Arm
 
 
-Crystal is about native code generation in and of ruby. Crystal defines a virtual OO machine.
+Sapphire is about native code generation in and of ruby. Sapphire defines a virtual OO machine.
 
 To get running code, the virtual machine code needs to be translated to machine specific binary.
 
-This is the Arm, and as arm is crystals main target, it is the most complete and working version.
+This is the Arm, and as arm is sapphires main target, it is the most complete and working version.
 
 ###  Assembly
 
