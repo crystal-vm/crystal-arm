@@ -1,11 +1,11 @@
-## Kide in Arm
+## Salama in Arm
 
 
-Kide is about native code generation in and of ruby. Kide defines a virtual OO machine.
+Salama is about native code generation in and of ruby. Salama defines a virtual OO machine.
 
 To get running code, the virtual machine code needs to be translated to machine specific binary.
 
-This is the Arm, and as arm is kides main target, it is the most complete and working version.
+This is the Arm, and as arm is salamas main target, it is the most complete and working version.
 
 ###  Assembly
 
