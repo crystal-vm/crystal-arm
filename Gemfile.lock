@@ -1,12 +1,12 @@
 GIT
   remote: https://github.com/salama/salama-reader.git
-  revision: 040b8423333a16d7d45e30cfd8f4987745e6cf55
+  revision: 5e56cf592247440561068047bcc490ad3e4afd21
   specs:
     salama-reader (0.1.0)
 
 GIT
   remote: https://github.com/salama/salama.git
-  revision: 869788536f7b0466756cc04ae349a46b1666bac2
+  revision: e341e6e508a543c6845b1f10ea2e62dd18fd7129
   specs:
     salama (0.0.1)
       parslet (~> 1.6.1)
