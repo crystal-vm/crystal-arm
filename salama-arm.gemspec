@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
 
   s.authors = ['Torsten Ruger']
   s.email = 'torsten@villataika.fi'
-  s.extra_rdoc_files = ['README.markdown']
-  s.files = %w(README.md LICENSE.txt Rakefile) + Dir.glob("lib/**/*")
+  s.extra_rdoc_files = ['README.md']
+  s.files = %w(README.md LICENSE) + Dir.glob("lib/**/*")
   s.homepage = 'https://github.com/salama/salama-arm'
   s.license = 'MIT'
   s.require_paths = ['lib']
