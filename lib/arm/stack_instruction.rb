@@ -1,9 +1,8 @@
-require "vm/instruction"
 require_relative "constants"
 
 module Arm
   # ADDRESSING MODE 4
-  class StackInstruction < Vm::StackInstruction
+  class StackInstruction < Register::StackInstruction
     include Arm::Constants
 
     # arm intrucioons are pretty sensible, and always 4 bytes (thumb not supported)

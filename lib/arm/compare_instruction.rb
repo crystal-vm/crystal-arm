@@ -1,5 +1,5 @@
 module Arm
-  class CompareInstruction < Vm::CompareInstruction
+  class CompareInstruction < Register::CompareInstruction
     include Arm::Constants
 
     def initialize(left , right , attributes)
@@ -23,16 +23,16 @@ module Arm
       immediate = @immediate
 
       arg = @right
-      if arg.is_a?(Vm::ObjectConstant)
+      if arg.is_a?(Virtual::ObjectConstant)
         # do pc relative addressing with the difference to the instuction
         # 8 is for the funny pipeline adjustment (ie oc pointing to fetch and not execute)
-        arg = Vm::IntegerConstant.new( arg.position - self.position - 8 )
+        arg = Virtual::IntegerConstant.new( arg.position - self.position - 8 )
         rn = :pc
       end
       if( arg.is_a? Fixnum ) #HACK to not have to change the code just now
-        arg = Vm::IntegerConstant.new( arg )
+        arg = Virtual::IntegerConstant.new( arg )
       end
-      if (arg.is_a?(Vm::IntegerConstant))
+      if (arg.is_a?(Virtual::IntegerConstant))
         if (arg.integer.fits_u8?)
           # no shifting needed
           operand = arg.integer
@@ -44,7 +44,7 @@ module Arm
         else
           raise "cannot fit numeric literal argument in operand #{arg.inspect}"
         end
-      elsif (arg.is_a?(Symbol) or arg.is_a?(Vm::Integer))
+      elsif (arg.is_a?(Symbol) or arg.is_a?(Virtual::Integer))
         operand = arg
         immediate = 0
       elsif (arg.is_a?(Arm::Shift))
@@ -58,7 +58,7 @@ module Arm
         end
     
         arg1 = arg.value
-        if (arg1.is_a?(Vm::IntegerConstant))
+        if (arg1.is_a?(Virtual::IntegerConstant))
           if (arg1.value >= 32)
             raise "cannot shift by more than 31 #{arg1} #{inspect}"
           end
@@ -74,7 +74,7 @@ module Arm
         raise "invalid operand argument #{arg.inspect} , #{inspect}"
       end
       instuction_class = 0b00 # OPC_DATA_PROCESSING
-      val = (operand.is_a?(Symbol) or operand.is_a?(Vm::Integer)) ? reg_code(operand) : operand 
+      val = (operand.is_a?(Symbol) or operand.is_a?(Virtual::Integer)) ? reg_code(operand) : operand 
       val = 0 if val == nil
       val = shift(val , 0)
       raise inspect unless reg_code(@rd)

@@ -1,14 +1,5 @@
-require "vm/register_machine"
-require_relative "stack_instruction"
-require_relative "logic_instruction"
-require_relative "move_instruction"
-require_relative "compare_instruction"
-require_relative "memory_instruction"
-require_relative "call_instruction"
-require_relative "constants"
-
 module Arm
-  class ArmMachine < Vm::RegisterMachine
+  class ArmMachine < Register::RegisterMachine
     # The constants are here for readablility, the code uses access functions below
     RETURN_REG = :r0
     TYPE_REG = :r1
@@ -26,7 +17,7 @@ module Arm
     end
 
     def function_call into , call
-      raise "Not CallSite #{call.inspect}" unless call.is_a? Vm::CallSite
+      raise "Not CallSite #{call.inspect}" unless call.is_a? Virtual::CallSite
       raise "Not linked #{call.inspect}" unless call.function
       into.add_code  call(  call.function  )
       raise "No return type for #{call.function.name}" unless call.function.return_type
@@ -34,13 +25,13 @@ module Arm
     end
 
     def main_start context
-      entry = Vm::Block.new("main_entry",nil,nil)
+      entry = Virtual::Block.new("main_entry",nil,nil)
       entry.add_code mov(  :fp ,  0 )
       entry.add_code call( context.function )
       entry
     end
     def main_exit context
-      exit = Vm::Block.new("main_exit",nil,nil)
+      exit = Virtual::Block.new("main_exit",nil,nil)
       syscall(exit , 1)
       exit
     end
@@ -68,7 +59,7 @@ module Arm
     end
 
     
-    # the number (a Vm::integer) is (itself) divided by 10, ie overwritten by the result
+    # the number (a Virtual::integer) is (itself) divided by 10, ie overwritten by the result
     #  and the remainder is overwritten (ie an out argument)
     # not really a function, more a macro, 
     def div10 function, number , remainder
@@ -92,8 +83,8 @@ module Arm
 
     def syscall block , num
       # This is very arm specific, syscall number is passed in r7, other arguments like a c call ie 0 and up
-      sys = Vm::Integer.new( Vm::RegisterReference.new(SYSCALL_REG) )
-      ret = Vm::Integer.new( Vm::RegisterReference.new(RETURN_REG) )
+      sys = Virtual::Integer.new( Virtual::RegisterReference.new(SYSCALL_REG) )
+      ret = Virtual::Integer.new( Virtual::RegisterReference.new(RETURN_REG) )
       block.add_code  mov(  sys , num )
       block.add_code  swi(  0 )
       #todo should write type into r1 according to syscall
@@ -102,3 +93,11 @@ module Arm
 
   end
 end
+
+require_relative "stack_instruction"
+require_relative "logic_instruction"
+require_relative "move_instruction"
+require_relative "compare_instruction"
+require_relative "memory_instruction"
+require_relative "call_instruction"
+require_relative "constants"

@@ -1,6 +1,6 @@
 module Arm
 
-  class MoveInstruction < Vm::MoveInstruction
+  class MoveInstruction < Register::MoveInstruction
     include Arm::Constants
 
     def initialize(to , from , attributes) 
@@ -12,8 +12,8 @@ module Arm
 
       @immediate = 0      
       @rn = :r0 # register zero = zero bit pattern
-#   NO-OP -> pass   raise inspect if  to.is_a?(Vm::Value) and 
- #                       from.is_a?(Vm::Value) and 
+#   NO-OP -> pass   raise inspect if  to.is_a?(Virtual::Value) and 
+ #                       from.is_a?(Virtual::Value) and 
   #                      !@attributes[:shift_lsr] and
    #                     to.register_symbol == from.register_symbol
       raise "uups " if @to.register_symbol == :rr1
@@ -31,16 +31,16 @@ module Arm
       immediate = @immediate
 
       right = @from
-      if right.is_a?(Vm::ObjectConstant)
+      if right.is_a?(Virtual::ObjectConstant)
         # do pc relative addressing with the difference to the instuction
         # 8 is for the funny pipeline adjustment (ie oc pointing to fetch and not execute)
-        right = Vm::IntegerConstant.new( right.position - self.position - 8 )
+        right = Virtual::IntegerConstant.new( right.position - self.position - 8 )
         rn = :pc
       end
       if( right.is_a? Fixnum )
-        right = Vm::IntegerConstant.new( right )
+        right = Virtual::IntegerConstant.new( right )
       end
-      if (right.is_a?(Vm::IntegerConstant))
+      if (right.is_a?(Virtual::IntegerConstant))
         if (right.integer.fits_u8?)
           # no shifting needed
           operand = right.integer
@@ -52,7 +52,7 @@ module Arm
         else
           raise "cannot fit numeric literal argument in operand #{right.inspect}"
         end
-      elsif (right.is_a?(Symbol) or right.is_a?(Vm::Integer))
+      elsif (right.is_a?(Symbol) or right.is_a?(Virtual::Integer))
         operand = reg_code(right)    #integer means the register the integer is in (otherwise constant)
         immediate = 0                # ie not immediate is register
       else

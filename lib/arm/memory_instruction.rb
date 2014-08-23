@@ -3,7 +3,7 @@ require_relative "nodes"
 module Arm
   # ADDRESSING MODE 2
   # Implemented: immediate offset with offset=0
-  class MemoryInstruction < Vm::MemoryInstruction
+  class MemoryInstruction < ::Register::MemoryInstruction
     include Arm::Constants
 
     def initialize(result , left , right = nil , attributes = {})
@@ -11,7 +11,7 @@ module Arm
       @attributes[:update_status] = 0 if @attributes[:update_status] == nil
       @attributes[:condition_code] = :al if @attributes[:condition_code] == nil
       @operand = 0
-      raise "alert" if right.is_a? Vm::Block
+      raise "alert" if right.is_a? Virtual::Block
       @pre_post_index = 0 #P flag
       @add_offset = 0 #U flag
       @is_load = opcode.to_s[0] == "l" ? 1 : 0 #L (load) flag
@@ -29,14 +29,14 @@ module Arm
       add_offset = @add_offset
       
       arg = @left
-      arg = arg.register_symbol if( arg.is_a? Vm::Word )
+      arg = arg.register_symbol if( arg.is_a? Virtual::Word )
       #str / ldr are _serious instructions. With BIG possibilities not half are implemented
       if (arg.is_a?(Symbol)) #symbol is register
         rn = arg
         if @right
           operand = @right
           #TODO better test, this operand integer (register) does not work. but sleep first
-          operand = operand.register_symbol if operand.is_a? Vm::Integer
+          operand = operand.register_symbol if operand.is_a? Virtual::Integer
           unless( operand.is_a? Symbol)
             puts "operand #{operand.inspect}"
             if (operand < 0)
@@ -51,14 +51,14 @@ module Arm
             end
           end
         end
-      elsif (arg.is_a?(Vm::ObjectConstant) ) #use pc relative
+      elsif (arg.is_a?(Virtual::ObjectConstant) ) #use pc relative
         rn = :pc
         operand = arg.position - self.position  - 8 #stringtable is after code
         add_offset = 1
         if (operand.abs > 4095)
           raise "reference offset too large/small (max 4095) #{arg} #{inspect}"
         end
-      elsif( arg.is_a?(Vm::IntegerConstant) )
+      elsif( arg.is_a?(Virtual::IntegerConstant) )
         #TODO untested brach, probably not working
         raise "is this working ??  #{arg} #{inspect}"
         @pre_post_index = 1

@@ -57,7 +57,7 @@ module Arm
     end
     def reg_code r_name
       raise "double r #{r_name}" if( :rr1 == r_name) 
-      if r_name.is_a? Vm::Word
+      if r_name.is_a? Virtual::Word
         r_name = r_name.register_symbol
       end
       if r_name.is_a? Fixnum
@@ -99,8 +99,8 @@ module Arm
      {'lsl' => 0b000, 'lsr' => 0b010, 'asr' => 0b100, 'ror' => 0b110, 'rrx' => 0b110}.each do |short, bin|
        long = "shift_#{short}".to_sym
        if shif = @attributes[long]
-         shif = shif.integer if (shif.is_a?(Vm::IntegerConstant))
-         if (shif.is_a?(Vm::Integer))
+         shif = shif.integer if (shif.is_a?(Virtual::IntegerConstant))
+         if (shif.is_a?(Virtual::Integer))
            raise "should not be supported, check code #{inspect}"
            bin |= 0x1;
            shift = shif.register << 1

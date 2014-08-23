@@ -12,7 +12,7 @@ module Arm
   # in Arm the register layout is different and so we have to place the syscall code into register 7
   # Registers 0-6 hold the call values as for a normal c call
   
-  class CallInstruction < Vm::CallInstruction
+  class CallInstruction < ::Register::CallInstruction
     include Arm::Constants
     
     # arm intrucioons are pretty sensible, and always 4 bytes (thumb not supported)
@@ -32,13 +32,13 @@ module Arm
         arg = @first
         #puts "BLAB #{arg.inspect}"
         if( arg.is_a? Fixnum ) #HACK to not have to change the code just now
-          arg = Vm::IntegerConstant.new( arg )
+          arg = Virtual::IntegerConstant.new( arg )
         end
-        if arg.is_a?(Vm::Block) or arg.is_a?(Vm::Function)
+        if arg.is_a?(Virtual::Block) or arg.is_a?(Virtual::Function)
           diff = arg.position - self.position - 8
-          arg = Vm::IntegerConstant.new(diff)
+          arg = Virtual::IntegerConstant.new(diff)
         end
-        if (arg.is_a?(Vm::IntegerConstant))
+        if (arg.is_a?(Virtual::IntegerConstant))
           jmp_val = arg.integer >> 2
           packed = [jmp_val].pack('l')
           # signed 32-bit, condense to 24-bit
@@ -51,9 +51,9 @@ module Arm
       when :swi
         arg = @first
         if( arg.is_a? Fixnum ) #HACK to not have to change the code just now
-          arg = Vm::IntegerConstant.new( arg )
+          arg = Virtual::IntegerConstant.new( arg )
         end
-        if (arg.is_a?(Vm::IntegerConstant))
+        if (arg.is_a?(Virtual::IntegerConstant))
           packed = [arg.integer].pack('L')[0,3]
           io << packed
           io.write_uint8 0b1111 | (COND_CODES[@attributes[:condition_code]] << 4)
