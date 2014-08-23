@@ -12,6 +12,4 @@ Gem::Specification.new do |s|
   s.license = 'MIT'
   s.require_paths = ['lib']
   s.summary = 'Implementation of the salama virtual vm in arm v6 opcodes'  
-  
-  s.add_dependency 'salama', '~> 0.0.1'
 end
