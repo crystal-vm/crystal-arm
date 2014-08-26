@@ -22,12 +22,12 @@ module Arm
       4
     end
                   
-    def assemble(io)
+    def assemble(io , assembler )
       # don't overwrite instance variables, to make assembly repeatable
       rn = @rn
       operand = @operand
       add_offset = @add_offset
-      
+return      
       arg = @left
       arg = arg.register_symbol if( arg.is_a? Virtual::Word )
       #str / ldr are _serious instructions. With BIG possibilities not half are implemented

@@ -16,7 +16,7 @@ module Arm
       4
     end
 
-    def assemble(io)
+    def assemble(io, assembler)
       # don't overwrite instance variables, to make assembly repeatable
       rn = @rn
       operand = @operand

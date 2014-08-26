@@ -26,7 +26,8 @@ module Arm
       @attributes[:condition_code] = :al if @attributes[:condition_code] == nil
     end
     
-    def assemble(io)
+    def assemble(io, assembler)
+      return
       case @attributes[:opcode]
       when :b, :call
         arg = @first
