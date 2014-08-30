@@ -1,10 +1,4 @@
 GIT
-  remote: https://github.com/salama/salama-reader.git
-  revision: 5e56cf592247440561068047bcc490ad3e4afd21
-  specs:
-    salama-reader (0.1.0)
-
-GIT
   remote: https://github.com/salama/salama.git
   revision: e341e6e508a543c6845b1f10ea2e62dd18fd7129
   specs:
@@ -91,5 +85,4 @@ DEPENDENCIES
   pry
   roodi
   salama (= 0.0.1)!
-  salama-reader (= 0.1.0)!
   simplecov
