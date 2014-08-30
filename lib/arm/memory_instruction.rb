@@ -27,18 +27,17 @@ module Arm
       rn = @rn
       operand = @operand
       add_offset = @add_offset
-return      
       arg = @left
-      arg = arg.register_symbol if( arg.is_a? Virtual::Word )
+      arg = arg.symbol if( arg.is_a? ::Register::RegisterReference )
       #str / ldr are _serious instructions. With BIG possibilities not half are implemented
       if (arg.is_a?(Symbol)) #symbol is register
         rn = arg
         if @right
           operand = @right
           #TODO better test, this operand integer (register) does not work. but sleep first
-          operand = operand.register_symbol if operand.is_a? Virtual::Integer
+          operand = operand.symbol if operand.is_a? Virtual::Integer
           unless( operand.is_a? Symbol)
-            puts "operand #{operand.inspect}"
+            #puts "operand #{operand.inspect}"
             if (operand < 0)
               add_offset = 0
               #TODO test/check/understand

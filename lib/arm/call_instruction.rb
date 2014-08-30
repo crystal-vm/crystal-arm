@@ -27,7 +27,6 @@ module Arm
     end
     
     def assemble(io, assembler)
-      return
       case @attributes[:opcode]
       when :b, :call
         arg = @first
@@ -35,8 +34,9 @@ module Arm
         if( arg.is_a? Fixnum ) #HACK to not have to change the code just now
           arg = Virtual::IntegerConstant.new( arg )
         end
-        if arg.is_a?(Virtual::Block) or arg.is_a?(Virtual::Function)
-          diff = arg.position - self.position - 8
+        if arg.is_a?(Virtual::Block) or arg.is_a?(Virtual::CompiledMethod)
+          diff = arg.position  - 8
+          diff -= self.position
           arg = Virtual::IntegerConstant.new(diff)
         end
         if (arg.is_a?(Virtual::IntegerConstant))

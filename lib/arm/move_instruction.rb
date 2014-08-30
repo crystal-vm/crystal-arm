@@ -15,8 +15,8 @@ module Arm
 #   NO-OP -> pass   raise inspect if  to.is_a?(Virtual::Value) and 
  #                       from.is_a?(Virtual::Value) and 
   #                      !@attributes[:shift_lsr] and
-   #                     to.register_symbol == from.register_symbol
-      raise "uups " if @to.register_symbol == :rr1
+   #                     to.symbol == from.symbol
+      raise "uups " if @to.symbol == :rr1
     end
     
     # arm intrucions are pretty sensible, and always 4 bytes (thumb not supported)

@@ -57,8 +57,8 @@ module Arm
     end
     def reg_code r_name
       raise "double r #{r_name}" if( :rr1 == r_name) 
-      if r_name.is_a? Virtual::Word
-        r_name = r_name.register_symbol
+      if r_name.is_a? ::Register::RegisterReference
+        r_name = r_name.symbol
       end
       if r_name.is_a? Fixnum
         r_name = "r#{r_name}"
