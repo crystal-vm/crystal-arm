@@ -1,6 +1,8 @@
-## Reintegrated
+[![Build Status](https://travis-ci.org/salama/salama-arm.svg?branch=master)](https://travis-ci.org/salama/salama-arm)
+[![Gem Version](https://badge.fury.io/rb/salama-arm.svg)](http://badge.fury.io/rb/salama-arm)
+[![Code Climate](https://codeclimate.com/github/salama/salama-arm/badges/gpa.svg)](https://codeclimate.com/github/salama/salama-arm)
+[![Test Coverage](https://codeclimate.com/github/salama/salama-arm/badges/coverage.svg)](https://codeclimate.com/github/salama/salama-arm)
 
-Temporarily reintegrated into salama to make working on both easier.
 
 ## Salama in Arm
 
@@ -13,8 +15,8 @@ This is the Arm, and as arm is salamas main target, it is the most complete and 
 
 ###  Assembly
 
-Produce binary that represents code. 
-Traditionally called assembling, but there is no need for an external file representation. 
+Produce binary that represents code.
+Traditionally called assembling, but there is no need for an external file representation.
 
 Ie only in ruby code do i want to create machine code.
 
@@ -23,7 +25,7 @@ Most instructions are in fact assembling correctly. Meaning i have tests, and i 
 I even polished the dsl an so (from the tests), this is a valid hello world:
 
    hello = "Hello World\n"
-   @program.main do 
+   @program.main do
       mov r7, 4     # 4 == write
       mov r0 , 1    # stdout
       add r1 , pc , hello   # address of "hello World"
@@ -32,7 +34,7 @@ I even polished the dsl an so (from the tests), this is a valid hello world:
       mov r7, 1     # 1 == exit
     	swi 0
    end
-   write(7 + hello.length/4 + 1 , 'hello') 
+   write(7 + hello.length/4 + 1 , 'hello')
 
 ### Vm implementation
 
