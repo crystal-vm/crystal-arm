@@ -99,10 +99,6 @@ module Arm
         #puts "Assemble extra at #{val.to_s(16)}"
       end
     end
-    def shift val , by
-      raise "Not integer #{val}:#{val.class} in #{inspect}" unless val.is_a? Fixnum
-      val << by
-    end
 
     def uses
       @from.is_a?(Constant) ? [] : [@from.register]

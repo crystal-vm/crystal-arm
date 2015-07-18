@@ -18,6 +18,11 @@ module Arm
       @attributes[:opcode]
     end
 
+    # for the shift handling that makes the arm so unique
+    def shift val , by
+      raise "Not integer #{val}:#{val.class} #{inspect}" unless val.is_a? Fixnum
+      val << by
+    end
 
     # this is giving read access to the attributes hash via .attibute syntax
     # so for an instruction pop you can write pop.opcode to get the :opcode attribute

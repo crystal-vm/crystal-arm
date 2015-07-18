@@ -85,10 +85,6 @@ module Arm
       val |= shift(cond_bit_code ,      12+4+4  +1+4+1+2)
       io.write_uint32 val
     end
-    def shift val , by
-      raise "Not integer #{val}:#{val.class} #{inspect}" unless val.is_a? Fixnum
-      val << by
-    end
 
     def uses
       ret = [@left.register ]
