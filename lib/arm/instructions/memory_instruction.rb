@@ -1,13 +1,14 @@
-require_relative "nodes"
-
 module Arm
   # ADDRESSING MODE 2
   # Implemented: immediate offset with offset=0
-  class MemoryInstruction < ::Register::MemoryInstruction
-    include Arm::Constants
 
-    def initialize(result , left , right = nil , attributes = {})
-      super(result , left , right , attributes)
+  class MemoryInstruction < Instruction
+    include Arm::Constants
+    def initialize result , left , right = nil , attributes = {}
+      super(attributes)
+      @result = result
+      @left = left
+      @right = right
       @attributes[:update_status] = 0 if @attributes[:update_status] == nil
       @attributes[:condition_code] = :al if @attributes[:condition_code] == nil
       @operand = 0
@@ -17,12 +18,7 @@ module Arm
       @is_load = opcode.to_s[0] == "l" ? 1 : 0 #L (load) flag
     end
 
-    # arm intructions are pretty sensible, and always 4 bytes (thumb not supported)
-    def length
-      4
-    end
-                  
-    def assemble(io , assembler )
+    def assemble(io )
       # don't overwrite instance variables, to make assembly repeatable
       rn = @rn
       operand = @operand
@@ -30,12 +26,16 @@ module Arm
       arg = @left
       arg = arg.symbol if( arg.is_a? ::Register::RegisterReference )
       #str / ldr are _serious instructions. With BIG possibilities not half are implemented
-      if (arg.is_a?(Symbol)) #symbol is register
+      is_reg = arg.is_a?(::Register::RegisterReference)
+      if( arg.is_a?(Symbol) and not is_reg)
+        is_reg = (arg.to_s[0] == "r")
+      end
+      if (is_reg ) #symbol is register
         rn = arg
         if @right
           operand = @right
           #TODO better test, this operand integer (register) does not work. but sleep first
-          operand = operand.symbol if operand.is_a? Virtual::Integer
+          operand = operand.symbol if operand.is_a? ::Register::RegisterReference
           unless( operand.is_a? Symbol)
             #puts "operand #{operand.inspect}"
             if (operand < 0)
@@ -50,14 +50,14 @@ module Arm
             end
           end
         end
-      elsif (arg.is_a?(Virtual::ObjectConstant) ) #use pc relative
+      elsif (arg.is_a?(Parfait::Object) or arg.is_a? Symbol ) #use pc relative
         rn = :pc
         operand = arg.position - self.position  - 8 #stringtable is after code
         add_offset = 1
         if (operand.abs > 4095)
-          raise "reference offset too large/small (max 4095) #{arg} #{inspect}"
+          raise "reference offset too large/small (4095<#{operand}) #{arg} #{inspect}"
         end
-      elsif( arg.is_a?(Virtual::IntegerConstant) )
+      elsif( arg.is_a?(Numeric) )
         #TODO untested brach, probably not working
         raise "is this working ??  #{arg} #{inspect}"
         @pre_post_index = 1
@@ -78,8 +78,8 @@ module Arm
       w = 0 #W flag
       byte_access = opcode.to_s[-1] == "b" ? 1 : 0 #B (byte) flag
       instuction_class =  0b01 # OPC_MEMORY_ACCESS
-      if operand.is_a?(Symbol)
-        val = reg_code(operand) 
+      if (operand.is_a?(Symbol) or operand.is_a?(::Register::RegisterReference))
+        val = reg_code(operand)
         @pre_post_index = 0
         i = 1  # not quite sure about this, but it gives the output of as. read read read.
       else
@@ -87,21 +87,30 @@ module Arm
         val = operand
       end
       val = shift(val , 0 ) # for the test
-      val |= shift(reg_code(@result) ,        12 )  
-      val |= shift(reg_code(rn) ,        12+4) #16  
+      val |= shift(reg_code(@result) ,        12 )
+      val |= shift(reg_code(rn) ,        12+4) #16
       val |= shift(@is_load ,        12+4  +4)
       val |= shift(w ,              12+4  +4+1)
       val |= shift(byte_access ,    12+4  +4+1+1)
       val |= shift(add_offset ,    12+4  +4+1+1+1)
       val |= shift(@pre_post_index, 12+4  +4+1+1+1+1)#24
       val |= shift(i ,              12+4  +4+1+1+1+1  +1)
-      val |= shift(instuction_class,12+4  +4+1+1+1+1  +1+1)  
+      val |= shift(instuction_class,12+4  +4+1+1+1+1  +1+1)
       val |= shift(cond_bit_code ,  12+4  +4+1+1+1+1  +1+1+2)
       io.write_uint32 val
     end
     def shift val , by
       raise "Not integer #{val}:#{val.class} #{inspect}" unless val.is_a? Fixnum
       val << by
+    end
+
+    def uses
+      ret = [@left.register ]
+      ret << @right.register unless @right.nil?
+      ret
+    end
+    def assigns
+      [@result.register]
     end
   end
 end

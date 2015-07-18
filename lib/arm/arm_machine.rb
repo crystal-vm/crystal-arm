@@ -1,103 +1,122 @@
+require_relative "instruction"
+
 module Arm
-  class ArmMachine < Register::RegisterMachine
-    # The constants are here for readablility, the code uses access functions below
-    RETURN_REG = :r0
-    TYPE_REG = :r1
-    RECEIVER_REG = :r2
-    SYSCALL_REG = :r7
-    
-    def return_register
-      RETURN_REG
-    end
-    def type_register
-      TYPE_REG
-    end
-    def receiver_register
-      RECEIVER_REG
-    end
 
-    def function_call into , call
-      raise "Not CallSite #{call.inspect}" unless call.is_a? Virtual::CallSite
-      raise "Not linked #{call.inspect}" unless call.function
-      into.add_code  call(  call.function  )
-      raise "No return type for #{call.function.name}" unless call.function.return_type
-      call.function.return_type
-    end
+  # A Machines main responsibility in the framework is to instantiate Instructions
 
-    def main_start context
-      entry = Virtual::Block.new("main_entry",nil,nil)
-      entry.add_code mov(  :fp ,  0 )
-      entry.add_code call( context.function )
-      entry
-    end
-    def main_exit context
-      exit = Virtual::Block.new("main_exit",nil,nil)
-      syscall(exit , 1)
-      exit
-    end
-    def function_entry block, f_name
-        block.add_code  push( [:lr] )
-        block
-    end
-    def function_exit entry , f_name
-      entry.add_code   pop(  [:pc] )
-      entry
-    end
+  # Value functions are mapped to machines by concatenating the values class name + the methd name
+  # Example:  IntegerValue.plus( value ) ->  Machine.signed_plus (value )
 
-    # assumes string in standard receiver reg (r2) and moves them down for the syscall
-    def write_stdout function #, string
-      # TODO save and restore r0
-      function.mov( :r0 ,  1 ) # 1 == stdout
-      function.mov( :r1 , receiver_register )
-      function.mov( receiver_register , :r3 )
-      syscall( function.insertion_point , 4 ) # 4 == write
-    end
+  # Also, shortcuts are created to easily instantiate Instruction objects.
+  # Example:  pop -> StackInstruction.new( {:opcode => :pop}.merge(options) )
+  # Instructions work with options, so you can pass anything in, and the only thing the functions
+  # does is save you typing the clazz.new. It passes the function name as the :opcode
 
-    # stop, do not return
-    def exit function #, string
-      syscall( function.insertion_point , 1 ) # 1 == exit
-    end
+  class ArmMachine
 
-    
-    # the number (a Virtual::integer) is (itself) divided by 10, ie overwritten by the result
-    #  and the remainder is overwritten (ie an out argument)
-    # not really a function, more a macro, 
-    def div10 function, number , remainder
-      # Note about division: devision is MUCH more expensive than one would have thought
-      # And coding it is a bit of a mind leap: it's all about finding a a result that gets the 
-      #  remainder smaller than an int. i'll post some links sometime. This is from the arm manual
-      tmp = function.new_local
-      function.instance_eval do 
-        sub( remainder ,  number ,  10 )
-        sub( number ,  number ,  number ,  shift_lsr: 2)
-        add( number ,  number ,  number ,  shift_lsr: 4)
-        add( number ,  number ,  number ,  shift_lsr: 8)
-        add( number ,  number ,  number ,  shift_lsr: 16)
-        mov( number ,   number , shift_lsr: 3)
-        add( tmp ,  number ,  number ,  shift_lsl: 2)
-        sub( remainder ,  remainder ,  tmp , shift_lsl: 1 , update_status: 1)
-        add( number ,  number,   1 , condition_code: :pl )
-        add( remainder ,  remainder ,   10 , condition_code: :mi )
+    # conditions specify all the possibilities for branches. Branches are b +  condition
+    # Example:  beq means brach if equal.
+    # :al means always, so bal is an unconditional branch (but b() also works)
+    CONDITIONS = [:al ,:eq ,:ne ,:lt ,:le ,:ge,:gt ,:cs ,:mi ,:hi ,:cc ,:pl,:ls ,:vc ,:vs]
+
+    # here we create the shortcuts for the "standard" instructions, see above
+    # Derived machines may use own instructions and define functions for them if so desired
+    def self.init
+      [:push, :pop].each do |inst|
+        define_instruction_one(inst , StackInstruction)
+      end
+      [:adc, :add, :and, :bic, :eor, :orr, :rsb, :rsc, :sbc, :sub].each do |inst|
+        define_instruction_three(inst , LogicInstruction)
+      end
+      [:mov, :mvn].each do |inst|
+        define_instruction_two(inst , MoveInstruction)
+      end
+      [:cmn, :cmp, :teq, :tst].each do |inst|
+        define_instruction_two(inst , CompareInstruction)
+      end
+      [:strb, :str , :ldrb, :ldr].each do |inst|
+        define_instruction_three(inst , MemoryInstruction)
+      end
+      [:b, :call , :swi].each do |inst|
+        define_instruction_one(inst , CallInstruction)
+      end
+      # create all possible brach instructions, but the CallInstruction demangles the
+      # code, and has opcode set to :b and :condition_code set to the condition
+      CONDITIONS.each do |suffix|
+        define_instruction_one("b#{suffix}".to_sym , CallInstruction)
+        define_instruction_one("call#{suffix}".to_sym , CallInstruction)
       end
     end
 
-    def syscall block , num
-      # This is very arm specific, syscall number is passed in r7, other arguments like a c call ie 0 and up
-      sys = Virtual::Integer.new( Virtual::RegisterReference.new(SYSCALL_REG) )
-      ret = Virtual::Integer.new( Virtual::RegisterReference.new(RETURN_REG) )
-      block.add_code  mov(  sys , num )
-      block.add_code  swi(  0 )
-      #todo should write type into r1 according to syscall
-      ret
+    def self.create_method(name,  &block)
+        self.class.send(:define_method, name , &block)
     end
 
+    def self.class_for clazz
+      my_module = self.class.name.split("::").first
+      clazz_name = clazz.name.split("::").last
+      if(my_module != Register )
+        module_class = eval("#{my_module}::#{clazz_name}") rescue nil
+        clazz = module_class if module_class
+      end
+      clazz
+    end
+
+    #defining the instruction (opcode, symbol) as an given class.
+    # the class is a Register::Instruction derived base class and to create machine specific function
+    #  an actual machine must create derived classes (from this base class)
+    # These instruction classes must follow a naming pattern and take a hash in the contructor
+    #  Example, a mov() opcode  instantiates a Register::MoveInstruction
+    #   for an Arm machine, a class Arm::MoveInstruction < Register::MoveInstruction exists, and it
+    #   will be used to define the mov on an arm machine.
+    # This methods picks up that derived class and calls a define_instruction methods that can
+    #   be overriden in subclasses
+    def self.define_instruction_one(inst , clazz ,  defaults = {} )
+      clazz = class_for(clazz)
+      create_method(inst) do |first , options = nil|
+        options = {} if options == nil
+        options.merge defaults
+        options[:opcode] = inst
+        first = Register::RegisterReference.convert(first)
+        clazz.new(first , options)
+      end
+    end
+
+    # same for two args (left right, from to etc)
+    def self.define_instruction_two(inst , clazz ,  defaults = {} )
+      clazz =  self.class_for(clazz)
+      create_method(inst) do |left ,right , options = nil|
+        options = {} if options == nil
+        options.merge defaults
+        left = Register::RegisterReference.convert(left)
+        right = Register::RegisterReference.convert(right)
+        options[:opcode] = inst
+        clazz.new(left , right ,options)
+      end
+    end
+
+    # same for three args (result = left right,)
+    def self.define_instruction_three(inst , clazz ,  defaults = {} )
+      clazz =  self.class_for(clazz)
+      create_method(inst) do |result , left ,right = nil , options = nil|
+        options = {} if options == nil
+        options.merge defaults
+        options[:opcode] = inst
+        result = Register::RegisterReference.convert(result)
+        left = Register::RegisterReference.convert(left)
+        right = Register::RegisterReference.convert(right)
+        clazz.new(result, left , right ,options)
+      end
+    end
   end
 end
-
-require_relative "stack_instruction"
-require_relative "logic_instruction"
-require_relative "move_instruction"
-require_relative "compare_instruction"
-require_relative "memory_instruction"
-require_relative "call_instruction"
-require_relative "constants"
+Arm::ArmMachine.init
+require_relative "passes/call_implementation"
+require_relative "passes/branch_implementation"
+require_relative "passes/syscall_implementation"
+require_relative "passes/save_implementation"
+require_relative "passes/transfer_implementation"
+require_relative "passes/get_implementation"
+require_relative "passes/set_implementation"
+require_relative "passes/return_implementation"
+require_relative "passes/constant_implementation"
