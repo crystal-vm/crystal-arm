@@ -28,7 +28,7 @@ module Arm
     # so for an instruction pop you can write pop.opcode to get the :opcode attribute
 
     # TODDO: review (don't remember what the "set_" stuff was for)
-    def method_missing name , *args , &block
+    def method_missin name , *args , &block
       return super unless (args.length <= 1) or block_given?
       set , attribute = name.to_s.split("set_")
       if set == ""

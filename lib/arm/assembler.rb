@@ -5,14 +5,14 @@ require 'stringio'
 require "arm/string_literal"
 
 module Arm
-  
+
   # Assembler is the the top-level of the code hierachy, except it is not derived from code
   # instead a Assembler is a list of blocks (and string constants)
-  
+
   # All code is created in blocks (see there) and there are two styles for that, for forward of backward
   # referencing. Read function block and add_block and Block.set
-  
-  
+
+
   class Assembler
 
     def initialize
@@ -20,11 +20,11 @@ module Arm
       @string_table = {}
     end
 
-    attr_reader  :blocks 
+    attr_reader  :blocks
 
-    # Assembling to string will return a binary string of the whole program, ie all blocks and the 
+    # Assembling to string will return a binary string of the whole program, ie all blocks and the
     # strings they use
-    # As a memory reference this would be callable, but more likely you will hand it over to 
+    # As a memory reference this would be callable, but more likely you will hand it over to
     # an ObjectWriter as the .text section and then link it. And then execute it :-)
     def assemble_to_string
       #put the strings at the end of the assembled code.
@@ -37,7 +37,7 @@ module Arm
       io.string
     end
 
-    # Add a string to the string table. Strings are global and constant. So only one copy of each 
+    # Add a string to the string table. Strings are global and constant. So only one copy of each
     # string exists
     # Internally StringConstants are created and stored and during assembly written after the blocks
     def add_string str
@@ -53,7 +53,7 @@ module Arm
       @blocks.inject(0) {| sum  , item | sum + item.length}
     end
 
-    # This is how you add a forward declared block. This is called automatically when you 
+    # This is how you add a forward declared block. This is called automatically when you
     # call block with ruby block, but has to be done manually if not
     def add_block block
       block.at self.length
@@ -61,19 +61,19 @@ module Arm
     end
 
     # return the block of the given name
-    # or raise an exception, as this is meant to be called when the block is available 
+    # or raise an exception, as this is meant to be called when the block is available
     def get_block name
       name = name.to_sym
       block = @blocks.find {|b| b.name == name}
       raise "No block found for #{name} (in #{blocks.collect{|b|b.name}.join(':')})" unless block
       block
     end
-    # this is used to create blocks. 
+    # this is used to create blocks.
     # All functions that have no args are interpreted as block names
-    # and if a block is provided, it is evaluated in the (ruby)blocks scope and the block added to the 
-    # program immediately. 
-    # If no block is provided (forward declaration), you must call code on it later 
-    def method_missing(meth, *args, &block)
+    # and if a block is provided, it is evaluated in the (ruby)blocks scope and the block added to the
+    # program immediately.
+    # If no block is provided (forward declaration), you must call code on it later
+    def method_missin(meth, *args, &block)
       if args.length == 0
         code = Block.new(meth.to_s , self )
         if block_given?
@@ -85,10 +85,10 @@ module Arm
         super
       end
     end
-    
+
 
     private
-    
+
     def assemble(io)
       @blocks.each do |obj|
         obj.assemble io
@@ -96,4 +96,3 @@ module Arm
     end
   end
 end
-
