@@ -18,15 +18,11 @@ GEM
     minitest (5.8.1)
     parslet (1.7.1)
       blankslate (>= 2.0, <= 4.0)
-    roodi (5.0.0)
-      ruby_parser (~> 3.2, >= 3.2.2)
-    ruby_parser (3.7.1)
-      sexp_processor (~> 4.1)
+    rubygems-tasks (0.2.4)
     salama-object-file (0.3.0)
     salama-reader (0.3.0)
       ast (~> 2.1.0)
       parslet (~> 1.7.0)
-    sexp_processor (4.6.0)
     simplecov (0.10.0)
       docile (~> 1.1.0)
       json (~> 1.8)
@@ -39,7 +35,7 @@ PLATFORMS
 DEPENDENCIES
   codeclimate-test-reporter
   minitest
-  roodi
+  rubygems-tasks
   salama!
 
 BUNDLED WITH

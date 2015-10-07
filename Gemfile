@@ -6,5 +6,5 @@ gem "codeclimate-test-reporter", require: nil
 
 group :development do
   gem "minitest"
-  gem "roodi"
+  gem "rubygems-tasks"
 end
