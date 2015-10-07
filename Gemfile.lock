@@ -6,6 +6,11 @@ GIT
       salama-object-file (~> 0.2)
       salama-reader (~> 0.2)
 
+PATH
+  remote: .
+  specs:
+    salama-arm (0.3.0)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -37,6 +42,7 @@ DEPENDENCIES
   minitest
   rubygems-tasks
   salama!
+  salama-arm!
 
 BUNDLED WITH
    1.10.6
