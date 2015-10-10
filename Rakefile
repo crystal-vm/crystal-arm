@@ -12,8 +12,7 @@ end
 require 'rake'
 
 
-require 'rubygems/tasks'
-Gem::Tasks.new
+require 'bundler/gem_tasks'
 
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |test|

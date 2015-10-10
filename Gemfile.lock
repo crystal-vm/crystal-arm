@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/salama/salama.git
-  revision: dd3381e38bb99461f121984163bdc8dbe6e44369
+  revision: aa20f2ca770fc3b2430b315e4d2129a773d0fa66
   specs:
     salama (0.3.0)
       salama-object-file (~> 0.3)
@@ -23,7 +23,6 @@ GEM
     minitest (5.8.1)
     parslet (1.7.1)
       blankslate (>= 2.0, <= 4.0)
-    rubygems-tasks (0.2.4)
     salama-object-file (0.3.0)
     salama-reader (0.3.0)
       ast (~> 2.1.0)
@@ -40,7 +39,6 @@ PLATFORMS
 DEPENDENCIES
   codeclimate-test-reporter
   minitest
-  rubygems-tasks
   salama!
   salama-arm!
 

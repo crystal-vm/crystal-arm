@@ -9,5 +9,4 @@ gem "codeclimate-test-reporter", require: nil
 
 group :development do
   gem "minitest"
-  gem "rubygems-tasks"
 end
