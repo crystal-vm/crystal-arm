@@ -28,7 +28,7 @@ module Arm
         rn = :pc
       end
       if( arg.is_a? Symbol )
-        arg = Register::RegisterReference.new( arg )
+        arg = Register::RegisterValue.new( arg )
       end
       if (arg.is_a?(Numeric))
         if (arg.fits_u8?)
@@ -42,7 +42,7 @@ module Arm
         else
           raise "cannot fit numeric literal argument in operand #{arg.inspect}"
         end
-      elsif (arg.is_a?(Symbol) or arg.is_a?(::Register::RegisterReference))
+      elsif (arg.is_a?(Symbol) or arg.is_a?(::Register::RegisterValue))
         operand = arg
         immediate = 0
       elsif (arg.is_a?(Arm::Shift))
@@ -72,7 +72,7 @@ module Arm
         raise "invalid operand argument #{arg.inspect} , #{inspect}"
       end
       instuction_class = 0b00 # OPC_DATA_PROCESSING
-      val = (operand.is_a?(Symbol) or operand.is_a?(::Register::RegisterReference)) ? reg_code(operand) : operand
+      val = (operand.is_a?(Symbol) or operand.is_a?(::Register::RegisterValue)) ? reg_code(operand) : operand
       val = 0 if val == nil
       val = shift(val , 0)
       raise inspect unless reg_code(@rd)

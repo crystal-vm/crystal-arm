@@ -59,7 +59,7 @@ module Arm
     end
     def reg_code r_name
       raise "double r #{r_name}" if( :rr1 == r_name)
-      if r_name.is_a? ::Register::RegisterReference
+      if r_name.is_a? ::Register::RegisterValue
         r_name = r_name.symbol
       end
       if r_name.is_a? Fixnum

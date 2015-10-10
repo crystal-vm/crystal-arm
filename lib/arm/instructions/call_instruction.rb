@@ -80,7 +80,7 @@ module Arm
     end
     def assigns
       if opcode == :call
-        [RegisterReference.new(RegisterMachine.instance.return_register)]
+        [RegisterValue.new(RegisterMachine.instance.return_register)]
       else
         []
       end

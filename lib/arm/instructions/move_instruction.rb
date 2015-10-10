@@ -4,8 +4,8 @@ module Arm
 
     def initialize to , from , options = {}
       super(options)
-      if( from.is_a?(Symbol) and Register::RegisterReference.look_like_reg(from) )
-        from = Register::RegisterReference.new(from)
+      if( from.is_a?(Symbol) and Register::RegisterValue.look_like_reg(from) )
+        from = Register::RegisterValue.new(from)
       end
       @from = from
       @to = to
@@ -75,7 +75,7 @@ module Arm
           # The way it _should_ be done
           # is to check that the first part is doabe with u8_with_rr AND leaves a u8 remainder
         end
-      elsif( right.is_a? Register::RegisterReference)
+      elsif( right.is_a? Register::RegisterValue)
         operand = reg_code(right)
         immediate = 0                # ie not immediate is register
       else

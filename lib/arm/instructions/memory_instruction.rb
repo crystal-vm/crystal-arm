@@ -24,9 +24,9 @@ module Arm
       operand = @operand
       add_offset = @add_offset
       arg = @left
-      arg = arg.symbol if( arg.is_a? ::Register::RegisterReference )
+      arg = arg.symbol if( arg.is_a? ::Register::RegisterValue )
       #str / ldr are _serious instructions. With BIG possibilities not half are implemented
-      is_reg = arg.is_a?(::Register::RegisterReference)
+      is_reg = arg.is_a?(::Register::RegisterValue)
       if( arg.is_a?(Symbol) and not is_reg)
         is_reg = (arg.to_s[0] == "r")
       end
@@ -35,7 +35,7 @@ module Arm
         if @right
           operand = @right
           #TODO better test, this operand integer (register) does not work. but sleep first
-          operand = operand.symbol if operand.is_a? ::Register::RegisterReference
+          operand = operand.symbol if operand.is_a? ::Register::RegisterValue
           unless( operand.is_a? Symbol)
             #puts "operand #{operand.inspect}"
             if (operand < 0)
@@ -78,7 +78,7 @@ module Arm
       w = 0 #W flag
       byte_access = opcode.to_s[-1] == "b" ? 1 : 0 #B (byte) flag
       instuction_class =  0b01 # OPC_MEMORY_ACCESS
-      if (operand.is_a?(Symbol) or operand.is_a?(::Register::RegisterReference))
+      if (operand.is_a?(Symbol) or operand.is_a?(::Register::RegisterValue))
         val = reg_code(operand)
         @pre_post_index = 0
         i = 1  # not quite sure about this, but it gives the output of as. read read read.

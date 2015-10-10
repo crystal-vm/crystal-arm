@@ -1,10 +1,10 @@
 GIT
   remote: git://github.com/salama/salama.git
-  revision: e669489419948d5fe092a9ef26d7df68e19aaafa
+  revision: dd3381e38bb99461f121984163bdc8dbe6e44369
   specs:
-    salama (0.2.0)
-      salama-object-file (~> 0.2)
-      salama-reader (~> 0.2)
+    salama (0.3.0)
+      salama-object-file (~> 0.3)
+      salama-reader (~> 0.3)
 
 PATH
   remote: .

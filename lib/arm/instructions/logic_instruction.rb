@@ -28,7 +28,7 @@ module Arm
 
       right = @right
       if @left.is_a?(Parfait::Object) or
-        @left.is_a?(Symbol) and !Register::RegisterReference.look_like_reg(@left)
+        @left.is_a?(Symbol) and !Register::RegisterValue.look_like_reg(@left)
         # do pc relative addressing with the difference to the instuction
         # 8 is for the funny pipeline adjustment (ie pointing to fetch and not execute)
         right = @left.position - self.position - 8
@@ -58,7 +58,7 @@ module Arm
           immediate = 1
           @extra = ArmMachine.add( result , result , (right & 0xFF) )
         end
-      elsif (right.is_a?(Symbol) or right.is_a?(::Register::RegisterReference))
+      elsif (right.is_a?(Symbol) or right.is_a?(::Register::RegisterValue))
         operand = reg_code(right)    #integer means the register the integer is in (otherwise constant)
         immediate = 0                # ie not immediate is register
       else
