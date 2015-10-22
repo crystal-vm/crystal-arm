@@ -33,11 +33,11 @@ module Arm
       case @attributes[:opcode]
       when :b, :call
         arg = @first
-        if arg.is_a?(Virtual::Block) or arg.is_a?(Parfait::Method)
+        if arg.is_a?(Register::Block) or arg.is_a?(Parfait::Method)
           #relative addressing for jumps/calls
           # but because of the arm "theoretical" 3- stage pipeline,
           # we have to subtract 2 words (fetch/decode)
-          if(arg.is_a? Virtual::Block)
+          if(arg.is_a? Register::Block)
             diff =  arg.position - self.position - 8
           else
             # But, for methods, this happens to be the size of the object header,

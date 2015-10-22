@@ -11,5 +11,5 @@ Gem::Specification.new do |s|
   s.homepage = 'https://github.com/salama/salama-arm'
   s.license = 'MIT'
   s.require_paths = ['lib']
-  s.summary = 'Implementation of the salama virtual vm in arm v6 opcodes'
+  s.summary = 'Implementation of the salama Register vm in arm v6 opcodes'
 end

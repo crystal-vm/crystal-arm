@@ -56,7 +56,7 @@ module Arm
         end
 
         arg1 = arg.value
-        if (arg1.is_a?(Virtual::IntegerConstant))
+        if (arg1.is_a?(Register::IntegerConstant))
           if (arg1.value >= 32)
             raise "cannot shift by more than 31 #{arg1} #{inspect}"
           end

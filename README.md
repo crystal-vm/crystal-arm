@@ -7,9 +7,9 @@
 ## Salama in Arm
 
 
-Salama is about native code generation in and of ruby. Salama defines a virtual OO machine.
+Salama is about native code generation in and of ruby. Salama defines a Register OO machine.
 
-To get running code, the virtual machine code needs to be translated to machine specific binary.
+To get running code, the Register machine code needs to be translated to machine specific binary.
 
 This is the Arm, and as arm is salamas main target, it is the most complete and working version.
 

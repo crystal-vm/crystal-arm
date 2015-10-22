@@ -15,5 +15,5 @@ module Arm
       end
     end
   end
-  Virtual.machine.add_pass "Arm::SaveImplementation"
+  Register.machine.add_pass "Arm::SaveImplementation"
 end

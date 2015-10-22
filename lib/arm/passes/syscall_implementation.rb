@@ -35,5 +35,5 @@ module Arm
     end
   end
 
-  Virtual.machine.add_pass "Arm::SyscallImplementation"
+  Register.machine.add_pass "Arm::SyscallImplementation"
 end

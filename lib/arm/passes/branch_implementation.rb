@@ -13,5 +13,5 @@ module Arm
       end
     end
   end
-  Virtual.machine.add_pass "Arm::BranchImplementation"
+  Register.machine.add_pass "Arm::BranchImplementation"
 end

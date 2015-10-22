@@ -9,5 +9,5 @@ module Arm
       end
     end
   end
-  Virtual.machine.add_pass "Arm::ReturnImplementation"
+  Register.machine.add_pass "Arm::ReturnImplementation"
 end

@@ -43,7 +43,7 @@ module Arm
     def add_string str
       code = @string_table[str]
       return code if code
-      data = Virtual::StringConstant.new(str)
+      data = Register::StringConstant.new(str)
       @string_table[str] = data
     end
 

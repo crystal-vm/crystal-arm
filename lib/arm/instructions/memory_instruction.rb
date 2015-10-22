@@ -12,7 +12,7 @@ module Arm
       @attributes[:update_status] = 0 if @attributes[:update_status] == nil
       @attributes[:condition_code] = :al if @attributes[:condition_code] == nil
       @operand = 0
-      raise "alert" if right.is_a? Virtual::Block
+      raise "alert" if right.is_a? Register::Block
       @pre_post_index = 0 #P flag
       @add_offset = 0 #U flag
       @is_load = opcode.to_s[0] == "l" ? 1 : 0 #L (load) flag
