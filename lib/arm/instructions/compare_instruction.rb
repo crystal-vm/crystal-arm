@@ -28,7 +28,7 @@ module Arm
         rn = :pc
       end
       if( arg.is_a? Symbol )
-        arg = Register::RegisterValue.new( arg )
+        arg = Register::RegisterValue.new( arg , :Integer)
       end
       if (arg.is_a?(Numeric))
         if (arg.fits_u8?)
