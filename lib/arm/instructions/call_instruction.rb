@@ -43,7 +43,7 @@ module Arm
             # But, for methods, this happens to be the size of the object header,
             # so there it balances out, but not blocks
             # have to use the code, not the mthod object for methods
-            diff = arg.code.position - self.position
+            diff = arg.binary.position - self.position
           end
           arg = diff
         end
