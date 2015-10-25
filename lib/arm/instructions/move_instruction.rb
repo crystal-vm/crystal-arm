@@ -1,9 +1,11 @@
 module Arm
-  class MoveInstruction < Instruction
-    include Arm::Constants
+  class MoveInstruction < Register::Instruction
+    include Constants
+    include Attributed
 
     def initialize to , from , options = {}
-      super(options)
+      super(nil)
+      @attributes = options
       if( from.is_a?(Symbol) and Register::RegisterValue.look_like_reg(from) )
         from = Register::RegisterValue.new(from)
       end

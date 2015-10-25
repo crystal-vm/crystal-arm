@@ -1,13 +1,16 @@
 module Arm
-  class LogicInstruction < Instruction
-    include Arm::Constants
+  class LogicInstruction < Register::Instruction
+    include Constants
+    include Attributed
+
     #  result = left op right
     #
     # Logic instruction are your basic operator implementation. But unlike the (normal) code we write
     #    these Instructions must have "place" to write their results. Ie when you write 4 + 5 in ruby
     #    the result is sort of up in the air, but with Instructions the result must be assigned
     def initialize(result , left , right , attributes = {})
-      super(attributes)
+      super(nil)
+      @attributes = attributes
       @result = result
       @left = left
       @right = right

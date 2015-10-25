@@ -1,9 +1,11 @@
 module Arm
-  class CompareInstruction < Instruction
-    include Arm::Constants
+  class CompareInstruction < Register::Instruction
+    include Constants
+    include Attributed
 
     def initialize(left , right , attributes)
-      super(attributes)
+      super(nil)
+      @attributes = attributes
       @left = left
       @right = right.is_a?(Fixnum) ? IntegerConstant.new(right) : right
       @attributes[:condition_code] = :al if @attributes[:condition_code] == nil

@@ -1,4 +1,4 @@
-require_relative "instruction"
+require_relative "attributed"
 
 module Arm
 

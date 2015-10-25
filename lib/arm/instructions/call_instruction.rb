@@ -9,11 +9,13 @@ module Arm
   # swi (SoftWareInterrupt) or system call is how we call the kernel.
   # in Arm the register layout is different and so we have to place the syscall code into register 7
   # Registers 0-6 hold the call values as for a normal c call
-  class CallInstruction < Instruction
-    include Arm::Constants
+  class CallInstruction < Register::Branch
+    include Constants
+    include Attributed
 
     def initialize(first, attributes)
-      super(attributes)
+      super(nil, nil)
+      @attributes = attributes
       raise "no target" if first.nil?
       @first = first
       opcode = @attributes[:opcode].to_s
@@ -33,11 +35,11 @@ module Arm
       case @attributes[:opcode]
       when :b, :call
         arg = @first
-        if arg.is_a?(Register::Block) or arg.is_a?(Parfait::Method)
+        if arg.is_a?(Register::Label) or arg.is_a?(Parfait::Method)
           #relative addressing for jumps/calls
           # but because of the arm "theoretical" 3- stage pipeline,
           # we have to subtract 2 words (fetch/decode)
-          if(arg.is_a? Register::Block)
+          if(arg.is_a? Register::Label)
             diff =  arg.position - self.position - 8
           else
             # But, for methods, this happens to be the size of the object header,
@@ -54,7 +56,7 @@ module Arm
           # TODO add check that the value fits into 24 bits
           io << packed[0,3]
         else
-          raise "else not coded arg =\n#{arg.to_s[0..1000]}: #{inspect[0..1000]}"
+          raise "else not Attributed arg =\n#{arg.to_s[0..1000]}: #{inspect[0..1000]}"
         end
         io.write_uint8 op_bit_code | (COND_CODES[@attributes[:condition_code]] << 4)
       when :swi

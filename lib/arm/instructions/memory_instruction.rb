@@ -2,23 +2,26 @@ module Arm
   # ADDRESSING MODE 2
   # Implemented: immediate offset with offset=0
 
-  class MemoryInstruction < Instruction
-    include Arm::Constants
+  class MemoryInstruction < Register::Instruction
+    include Constants
+    include Attributed
+
     def initialize result , left , right = nil , attributes = {}
-      super(attributes)
+      super(nil)
+      @attributes = attributes
       @result = result
       @left = left
       @right = right
       @attributes[:update_status] = 0 if @attributes[:update_status] == nil
       @attributes[:condition_code] = :al if @attributes[:condition_code] == nil
       @operand = 0
-      raise "alert" if right.is_a? Register::Block
+      raise "alert" if right.is_a? Register::Label
       @pre_post_index = 0 #P flag
       @add_offset = 0 #U flag
       @is_load = opcode.to_s[0] == "l" ? 1 : 0 #L (load) flag
     end
 
-    def assemble(io )
+    def assemble(io)
       # don't overwrite instance variables, to make assembly repeatable
       rn = @rn
       operand = @operand

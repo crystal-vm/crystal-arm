@@ -1,11 +1,13 @@
 module Arm
   # ADDRESSING MODE 4
 
-  class StackInstruction < Instruction
-    include Arm::Constants
+  class StackInstruction < Register::Instruction
+    include Constants
+    include Attributed
 
     def initialize(first , attributes)
-      super(attributes)
+      super(nil)
+      @attributes = attributes
       @first = first
       @attributes[:update_status] = 0 if @attributes[:update_status] == nil
       @attributes[:condition_code] = :al if @attributes[:condition_code] == nil
