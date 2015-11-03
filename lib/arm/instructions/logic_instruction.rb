@@ -30,7 +30,7 @@ module Arm
       immediate = @immediate
 
       right = @right
-      if @left.is_a?(Parfait::Object) or
+      if @left.is_a?(Parfait::Object) or @left.is_a?(Register::Label) or
         @left.is_a?(Symbol) and !Register::RegisterValue.look_like_reg(@left)
         # do pc relative addressing with the difference to the instuction
         # 8 is for the funny pipeline adjustment (ie pointing to fetch and not execute)
