@@ -25,7 +25,7 @@ module Arm
       [:push, :pop].each do |inst|
         define_instruction_one(inst , StackInstruction)
       end
-      [:adc, :add, :and, :bic, :eor, :orr, :rsb, :rsc, :sbc, :sub].each do |inst|
+      [:adc, :add, :and, :bic, :eor, :orr, :rsb, :rsc, :sbc, :sub , :mul].each do |inst|
         define_instruction_three(inst , LogicInstruction)
       end
       [:mov, :mvn].each do |inst|

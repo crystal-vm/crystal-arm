@@ -8,6 +8,7 @@ module Arm
       :rsb => 0b0011, :rsc => 0b0111,
       :sbc => 0b0110, :sub => 0b0010,
 
+      :mul => 0b0000 , # reverse engineered, shoud check
       # for these Rn is sbz (should be zero)
       :mov => 0b1101,
       :mvn => 0b1111,

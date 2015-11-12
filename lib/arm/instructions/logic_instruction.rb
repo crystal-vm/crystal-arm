@@ -67,12 +67,20 @@ module Arm
       else
         raise "invalid operand argument #{right.inspect} , #{inspect}"
       end
+      result = reg_code(@result)
+      left_code = reg_code(left)
       op =  shift_handling
       instuction_class = 0b00 # OPC_DATA_PROCESSING
+      if( opcode == :mul )
+        operand = reg_code(left) + 0x90
+        op = reg_code(right) << 8
+        result = 0
+        left_code = reg_code(@result)
+      end
       val = shift(operand , 0)
-      val |= shift(op , 0) # any barral action, is already shifted
-      val |= shift(reg_code(@result) ,            12)
-      val |= shift(reg_code(left) ,            12+4)
+      val |= shift(op , 0) # any barrel action, is already shifted
+      val |= shift(result ,            12)
+      val |= shift(left_code ,            12+4)
       val |= shift(@attributes[:update_status] , 12+4+4)#20
       val |= shift(op_bit_code ,        12+4+4  + 1)
       val |= shift(immediate ,                  12+4+4  + 1+4)

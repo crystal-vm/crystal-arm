@@ -16,7 +16,15 @@ class TestArmAsm < MiniTest::Test
     assert_code code , :teq , [0x02,0x00,0x31,0xe1] #e1 31 00 02
   end
   def test_tst
-    code = @machine.tst  :r1 , :r2 
+    code = @machine.tst  :r1 , :r2
     assert_code code , :tst , [0x02,0x00,0x11,0xe1] #e1 11 00 02
+  end
+  def test_tst2
+    code = @machine.tst  :r1 , :r1
+    assert_code code , :tst , [0x01,0x00,0x11,0xe1] #e1 11 00 01
+  end
+  def test_tst3
+    code = @machine.tst  :r2 , :r2
+    assert_code code , :tst , [0x02,0x00,0x12,0xe1] #e1 12 00 02
   end
 end

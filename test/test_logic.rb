@@ -3,7 +3,19 @@ require_relative 'arm-helper'
 class TestLogic < MiniTest::Test
   include ArmHelper
 
-  def test_and # inst eval doesn't really work with and
+  def test_mul1
+    code = @machine.mul(  :r0 , :r1 , :r2)
+    assert_code code , :mul , [0x91,0x02,0x00,0xe0] #e0 00 02 91
+  end
+  def test_mul2
+    code = @machine.mul(  :r1 , :r2 , :r3)
+    assert_code code , :mul , [0x92,0x03,0x01,0xe0] #e0 01 03 92
+  end
+  def test_mul3
+    code = @machine.mul(  :r2 , :r3 , :r4)
+    assert_code code , :mul , [0x93,0x04,0x02,0xe0] #e0 02 04 93
+  end
+  def test_and
     code = @machine.and(  :r1 , :r2 , :r3)
     assert_code code , :and , [0x03,0x10,0x02,0xe0] #e0 01 10 03
   end
@@ -29,7 +41,7 @@ class TestLogic < MiniTest::Test
   end
   def test_sub
     code = @machine.sub  :r2, :r0, 1
-    assert_code code, :sub ,  [0x01,0x20,0x40,0xe2] #e2 40 20 01 
+    assert_code code, :sub ,  [0x01,0x20,0x40,0xe2] #e2 40 20 01
   end
   def test_subs
     code = @machine.sub  :r2, :r2, 1 , update_status: 1
