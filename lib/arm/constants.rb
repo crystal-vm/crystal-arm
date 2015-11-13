@@ -103,16 +103,17 @@ module Arm
      shift_codes.each do |short, bin|
        long = "shift_#{short}".to_sym
        if shif = @attributes[long]
-         # TODO delete this code, AFTER you understand it
-         # tests do pass without it, maybe need more tests ?
-         #if (shif.is_a?(Numeric))
-        #   raise "should not be supported, check code #{inspect}"
-      #     bin |= 0x1;
-      #     shift = shif.register << 1
-      #   end
-         raise "0 < shift <= 32  #{shif} #{inspect}"  if (shif >= 32) or( shif < 0)
-         op |=   shift(bin  , 4 )
-         op |=   shift(shif , 4+3)
+         # TODO  need more tests ?
+         if (shif.is_a?(Numeric))
+           raise "0 < shift <= 32  #{shif} #{inspect}"  if (shif >= 32) or( shif < 0)
+           op |=   shift(bin  , 4 )
+           op |=   shift(shif , 4+3)
+         else
+           bin |= 0x1;
+           shift = shif.reg_no << 1
+           op |=   shift(bin  , 4 )
+           op |=   shift(shift , 4+3)
+          end
          break
        end
      end
