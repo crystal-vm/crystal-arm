@@ -7,7 +7,7 @@ module Arm
       super(nil)
       @attributes = options
       if( from.is_a?(Symbol) and Register::RegisterValue.look_like_reg(from) )
-        from = Register::RegisterValue.new(from)
+        from = Register::RegisterValue.new(from , :Integer)
       end
       @from = from
       @to = to

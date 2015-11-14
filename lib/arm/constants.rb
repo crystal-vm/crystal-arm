@@ -93,6 +93,13 @@ module Arm
      end
    end
 
+   Register::RegisterValue.class_eval do
+    def reg_no
+      @symbol.to_s[1 .. -1].to_i
+    end
+
+   end
+
    #slighly wrong place for this code, but since the module gets included in instructions anyway . . .
    # implement the barrel shifter on the operand (which is set up before as an integer)
    def shift_handling
@@ -103,17 +110,16 @@ module Arm
      shift_codes.each do |short, bin|
        long = "shift_#{short}".to_sym
        if shif = @attributes[long]
-         # TODO  need more tests ?
+         # TODO  need more tests
          if (shif.is_a?(Numeric))
            raise "0 < shift <= 32  #{shif} #{inspect}"  if (shif >= 32) or( shif < 0)
            op |=   shift(bin  , 4 )
            op |=   shift(shif , 4+3)
          else
            bin |= 0x1;
-           shift = shif.reg_no << 1
-           op |=   shift(bin  , 4 )
-           op |=   shift(shift , 4+3)
-          end
+           op  |=   shift(bin  , 4 )
+           op  |=   shift(shif.reg_no , 8)
+         end
          break
        end
      end
