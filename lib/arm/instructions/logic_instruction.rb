@@ -89,6 +89,9 @@ module Arm
       io.write_uint32 val
       # by now we have the extra add so assemble that
       if(@extra)
+        if(@extra == 1) # unles things have changed and then we add a noop (to keep the length same)
+          @extra = ArmMachine.mov( :r1 , :r1  )
+        end
         @extra.assemble(io)
         #puts "Assemble extra at #{val.to_s(16)}"
       end
@@ -98,6 +101,9 @@ module Arm
       @extra ? 8 : 4
     end
 
+    def to_s
+      "#{self.class.name} #{opcode} #{@result} = #{@left} #{@right}  extra=#{@extra}"
+    end
     def uses
       ret = []
       ret << @left.register if @left and not @left.is_a? Constant
