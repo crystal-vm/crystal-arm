@@ -15,6 +15,10 @@ class TestAdd < MiniTest::Test
     code = @machine.add	 :r1 , :r1, 0x22
     assert_code code , :add , [0x22,0x10,0x81,0xe2] #e2 81 10 22
   end
+  def test_add_const_pc
+    code = @machine.add	 :r1 , :pc, 0x22
+    assert_code code , :add , [0x22,0x10,0x8f,0xe2] #e2 8f 10 22
+  end
   def test_add_const_shift
     code = @machine.add( :r1 , :r1 , 0x22 ,  shift_lsr: 8)
     assert_code code , :add , [0x22,0x14,0x81,0xe2] #e2 81 14 23
@@ -26,5 +30,16 @@ class TestAdd < MiniTest::Test
   def test_big_add
     code = @machine.add	 :r1 , :r1, 0x220
     assert_code code , :add , [0x22,0x1e,0x81,0xe2] #e2 81 1e 22
+  end
+
+  def label pos = 0x22
+    l  = Register::Label.new("some" , "Label")
+    l.position =  pos
+    l
+  end
+
+  def pest_move_object
+    code = @machine.add( :r1 , label)
+    assert_code code , :add , [0x22,0x10,0x8f,0xe2] #e2 8f 10 22
   end
 end
