@@ -13,6 +13,9 @@ module Arm
     def opcode
       @attributes[:opcode]
     end
+    def set_opcode code
+      @attributes[:opcode] = code
+    end
 
     # for the shift handling that makes the arm so unique
     def shift val , by

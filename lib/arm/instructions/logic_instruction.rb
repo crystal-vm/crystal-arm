@@ -30,12 +30,15 @@ module Arm
       immediate = @immediate
 
       right = @right
-      if @left.is_a?(Parfait::Object) or @left.is_a?(Register::Label) or
-        @left.is_a?(Symbol) and !Register::RegisterValue.look_like_reg(@left)
+      if( @left.is_a?(Parfait::Object) or @left.is_a?(Register::Label) or
+        (@left.is_a?(Symbol) and !Register::RegisterValue.look_like_reg(@left)))
         # do pc relative addressing with the difference to the instuction
         # 8 is for the funny pipeline adjustment (ie pointing to fetch and not execute)
         right = @left.position - self.position - 8
-        raise "todo in direction #{right}" if( opcode == :add and right < 0 )
+        if( (right < 0) && (opcode == :add) )
+          right = 0 - right
+          set_opcode :sub
+        end
         raise "No negatives implemented #{right} " if right < 0
         left = :pc
       end
