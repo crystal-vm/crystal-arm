@@ -1,4 +1,4 @@
-require_relative 'arm-helper'
+require_relative 'helper'
 
 class TestControl < MiniTest::Test
   include ArmHelper
