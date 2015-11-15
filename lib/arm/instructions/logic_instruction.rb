@@ -35,6 +35,10 @@ module Arm
         # do pc relative addressing with the difference to the instuction
         # 8 is for the funny pipeline adjustment (ie pointing to fetch and not execute)
         right = @left.position - self.position - 8
+        if( (right < 0) && ((opcode == :add) || (opcode == :sub)) )
+          right *= -1   # this works as we never issue sub only add
+          set_opcode :sub  # so (as we can't change the sign permanently) we can change the opcode
+        end                         # and the sign even for sub (becuase we created them)
         raise "No negatives implemented #{self} #{right} " if right < 0
         left = :pc
       end
