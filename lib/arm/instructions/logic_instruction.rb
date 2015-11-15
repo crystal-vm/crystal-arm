@@ -62,7 +62,8 @@ module Arm
           operand = calculate_u8_with_rr( first )
           raise "no fit for #{right}" unless operand
           immediate = 1
-          @extra = ArmMachine.add( result , result , (right & 0xFF) )
+          # use sub for sub and add for add, ie same as opcode
+          @extra = ArmMachine.send( opcode ,  result , result , (right & 0xFF) )
         end
       elsif (right.is_a?(Symbol) or right.is_a?(::Register::RegisterValue))
         operand = reg_code(right)    #integer means the register the integer is in (otherwise constant)
