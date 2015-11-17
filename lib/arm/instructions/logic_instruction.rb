@@ -14,7 +14,7 @@ module Arm
       @result = result
       @left = left
       @right = right
-      @attributes[:update_status] = 0 if @attributes[:update_status] == nil
+      @attributes[:update_status] = 1 if @attributes[:update_status] == nil
       @attributes[:condition_code] = :al if @attributes[:condition_code] == nil
       @operand = 0
 

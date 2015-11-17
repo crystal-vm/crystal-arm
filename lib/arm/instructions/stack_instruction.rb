@@ -14,7 +14,7 @@ module Arm
       @attributes[:opcode] = attributes[:opcode]
       @operand = 0
 
-      @attributes[:update_status]= 0
+#      @attributes[:update_status]= 0
       @rn = :r0 # register zero = zero bit pattern
       # downward growing, decrement before memory access
       # official ARM style stack as used by gas
