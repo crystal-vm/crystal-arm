@@ -61,7 +61,7 @@ module Arm
           raise "reference offset too large/small (4095<#{operand}) #{arg} #{inspect}"
         end
       elsif( arg.is_a?(Numeric) )
-        #TODO untested brach, probably not working
+        #TODO untested branch, probably not working
         raise "is this working ??  #{arg} #{inspect}"
         @pre_post_index = 1
         @rn = pc
@@ -77,7 +77,7 @@ module Arm
       # TODO to be continued
       add_offset = 0 if @attributes[:add_offset]
       @pre_post_index = 1
-      @pre_post_index = 0 if @attributes[:flaggie]
+      @pre_post_index = 0 if @attributes[:pre_post_index]
       w = 0 #W flag
       byte_access = opcode.to_s[-1] == "b" ? 1 : 0 #B (byte) flag
       instuction_class =  0b01 # OPC_MEMORY_ACCESS
@@ -89,6 +89,10 @@ module Arm
         i = 0 #I flag (third bit)
         val = operand
       end
+      # testing against gnu as, setting the flag produces correct output
+      # but gnu as produces same output for auto_inc or not, so that seems broken
+      # luckily auto_inc is not used and even if on clobbers unused reg in soml, but still
+      @pre_post_index = 1
       val = shift(val , 0 ) # for the test
       val |= shift(reg_code(@result) ,        12 )
       val |= shift(reg_code(rn) ,        12+4) #16
