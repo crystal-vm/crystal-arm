@@ -91,9 +91,11 @@ module Arm
       end
       # testing against gnu as, setting the flag produces correct output
       # but gnu as produces same output for auto_inc or not, so that seems broken
-      # luckily auto_inc is not used and even if on clobbers unused reg in soml, but still
+      # luckily auto_inc is not used and even if it clobbers unused reg in soml, but still
       @pre_post_index = 1
+      op =  shift_handling
       val = shift(val , 0 ) # for the test
+      val |= shift(op , 0)
       val |= shift(reg_code(@result) ,        12 )
       val |= shift(reg_code(rn) ,        12+4) #16
       val |= shift(@is_load ,        12+4  +4)

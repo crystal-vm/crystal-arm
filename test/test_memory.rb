@@ -15,6 +15,14 @@ class TestMemory < MiniTest::Test
     code = @machine.ldr  :r3, :r4 , :r5
     assert_code code, :ldr ,  [0x05,0x30,0x94,0xe7] #e7 94 30 05
   end
+  def test_ldr_reg_shift2
+    code = @machine.ldr  :r3, :r4 , :r5 , :shift_lsl => 2
+    assert_code code, :ldr ,  [0x05,0x31,0x94,0xe7] #e7 94 31 05
+  end
+  def test_ldr_reg_shift3
+    code = @machine.ldr  :r3, :r4 , :r5 , :shift_lsl => 3
+    assert_code code, :ldr ,  [0x85,0x31,0x94,0xe7] #e7 94 31 85
+  end
   def test_ldrb
     code = @machine.ldrb  :r0, :r0
     assert_code code, :ldrb ,  [0x00,0x00,0xd0,0xe5] #e5 d0 00 00
@@ -39,6 +47,10 @@ class TestMemory < MiniTest::Test
   def test_str_reg_offset
     code = @machine.str  :r3, :r4 , :r5
     assert_code code, :str ,  [0x05,0x30,0x84,0xe7] #e7 84 30 05
+  end
+  def test_str_reg_shift
+    code = @machine.str  :r3, :r4 , :r5 , :shift_lsl => 2
+    assert_code code, :str ,  [0x05,0x31,0x84,0xe7] #e7 84 31 05
   end
 
   def test_strb_inc   #THIS IS BROKEN, but so is gnu as, as it produces same output for ! or not
