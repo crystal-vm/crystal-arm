@@ -40,4 +40,4 @@ I even polished the dsl an so (from the tests), this is a valid hello world:
 
 The actual vm implementation is currently in flux. I tried to go from the ast to assembler, and that proved to big a step.
 
-Hence the actual api is in flux. I just made the seperate repository to remove some clutter. Especially in project searches.
+Hence the actual api is in flux. I just made the separate repository to remove some clutter. Especially in project searches.
